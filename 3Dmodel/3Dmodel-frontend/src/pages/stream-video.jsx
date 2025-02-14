@@ -1,17 +1,42 @@
 import { useState, useRef, useEffect } from "react";
 import { useMutation } from "@tanstack/react-query";
 
-function StreamEmotions() {
+function StreamVideo() {
   const videoRef = useRef(null);
   const [stream, setStream] = useState(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
 
-  const analyzeMutation = useMutation({
+  // returns emotion + face verification object
+  const analyzeEmotionMutation = useMutation({
     mutationFn: async (imageBlob) => {
       const formData = new FormData();
       formData.append("image", imageBlob, "capture.jpg");
 
-      const response = await fetch("http://127.0.0.1:5000/analyze", {
+      const response = await fetch("http://127.0.0.1:5000/analyze-emotions", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Network response was not ok");
+      }
+
+      const data = await response.json();
+      console.log("Response data:", data);
+      return data;
+    },
+    onError: (error) => {
+      console.error("Mutation error:", error);
+    },
+  });
+
+  const verifyFaceMutation = useMutation({
+    mutationFn: async (imageBlob) => {
+      const formData = new FormData();
+      formData.append("image", imageBlob, "capture1.jpg");
+
+      const response = await fetch("http://127.0.0.1:5000/verify-face", {
         method: "POST",
         body: formData,
       });
@@ -75,7 +100,8 @@ function StreamEmotions() {
           canvas.toBlob(async (blob) => {
             if (blob) {
               try {
-                await analyzeMutation.mutateAsync(blob);
+                await analyzeEmotionMutation.mutateAsync(blob);
+                await verifyFaceMutation.mutateAsync(blob);
               } catch (error) {
                 console.error("Analysis error:", error);
               } finally {
@@ -107,27 +133,47 @@ function StreamEmotions() {
             style={{ width: "100%", maxWidth: "640px" }}
           />
         </div>
-
-        {analyzeMutation.isPending && <div>Analyzing...</div>}
-        {analyzeMutation.isError && (
-          <div>Error: {analyzeMutation.error.message}</div>
-        )}
-        {analyzeMutation.isSuccess && (
-          <div className="results">
-            <h2>Current Emotion:</h2>
-            <pre>
-              {JSON.stringify(analyzeMutation.data.dominant_emotion, null, 2)}
-            </pre>
-            <div className="emotion"></div>
-            <div className="detailed-results">
-              <h3>All Emotions:</h3>
-              <pre>{JSON.stringify(analyzeMutation.data, null, 2)}</pre>
+        <>
+          {analyzeEmotionMutation.isPending ||
+            (analyzeEmotionMutation.isLoading && <div>Analyzing...</div>)}
+          {analyzeEmotionMutation.isError && (
+            <div>Error: {analyzeEmotionMutation.error.message}</div>
+          )}
+          {analyzeEmotionMutation.isSuccess && (
+            <div className="results">
+              <h1>Current Emotion:</h1>
+              <pre>
+                {JSON.stringify(
+                  analyzeEmotionMutation.data.dominant_emotion,
+                  null,
+                  2
+                )}
+              </pre>
+              <div className="emotion"></div>
+              <div className="detailed-results">
+                <h3>All Emotions:</h3>
+                <pre>
+                  {JSON.stringify(analyzeEmotionMutation.data, null, 2)}
+                </pre>
+              </div>
             </div>
-          </div>
-        )}
+          )}
+        </>
+        <>
+          {verifyFaceMutation.isPending && <div>Verifying face...</div>}
+          {verifyFaceMutation.isError && (
+            <div>Error: {verifyFaceMutation.error.message}</div>
+          )}
+          {verifyFaceMutation.isSuccess && (
+            <div className="results">
+              <h1>Face Verification:</h1>
+              <pre>{JSON.stringify(verifyFaceMutation.data, null, 2)}</pre>
+            </div>
+          )}
+        </>
       </div>
     </>
   );
 }
 
-export default StreamEmotions;
+export default StreamVideo;

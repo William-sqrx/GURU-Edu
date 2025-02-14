@@ -34,8 +34,8 @@ def convert_np_to_normal(dictionary):
 def home():
     return "Hello, Flask!"
 
-@app.route('/analyze', methods=['POST'])
-def analyze():
+@app.route('/analyze-emotions', methods=['POST'])
+def analyze_emotions():
     try:
         if 'image' not in request.files:
             return jsonify({"error": "No image file provided"}), 400
@@ -68,6 +68,51 @@ def analyze():
         
         print("Returning results:", results) 
         return jsonify(convert_np_to_normal(results[0]))  # NOTE: changed from results to results[0]
+    
+    except Exception as e:
+        import traceback
+        print(f"Error in /analyze: {str(e)}")
+        print(traceback.format_exc())  # Print full traceback
+        # Clean up in case of error
+        if 'filepath' in locals() and os.path.exists(filepath):
+            os.remove(filepath)
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/verify-face', methods=['POST'])
+def verify_face():
+    try:
+        if 'image' not in request.files:
+            return jsonify({"error": "No image file provided"}), 400
+        
+        file = request.files['image']
+        if file.filename == '':
+            return jsonify({"error": "No selected file"}), 400
+        
+        # Save the uploaded file locally for now
+        filename = secure_filename(file.filename)
+        filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        file.save(filepath)
+        
+        print(f"File saved to: {filepath}")
+        
+        # Analyze the image
+        try:
+            results = DeepFace.verify(
+                img1_path=filepath,
+                img2_path="",
+                model_name="Facenet",
+                enforce_detection=False
+            )
+            print("Analysis completed successfully")
+        except Exception as analysis_error:
+            print(f"DeepFace analysis error: {str(analysis_error)}")
+            raise analysis_error
+        
+        # Clean up - remove uploaded file after analysis
+        os.remove(filepath)
+        
+        print("Returning results:", results) 
+        return jsonify(results)
     
     except Exception as e:
         import traceback

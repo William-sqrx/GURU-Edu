@@ -4,7 +4,7 @@ import { Leva } from "leva";
 import { Experience } from "./components/Experience";
 import { UI } from "./components/UI";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import StreamEmotions from "./pages/stream-emotions";
+import StreamVideo from "./pages/stream-video";
 
 function App() {
   return (
@@ -23,7 +23,7 @@ function App() {
             </>
           }
         />
-        <Route path="/stream-emotions" element={<StreamEmotions />} />
+        <Route path="/stream-video" element={<StreamVideo />} />
       </Routes>
     </Router>
   );
