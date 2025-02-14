@@ -1,0 +1,3 @@
+extra thing to install on your local: 
+ffmpeg
+download zip file from online repo. create a new bin folder in this directory and put the res subfolder into a newrhubarb-lip-sync 
