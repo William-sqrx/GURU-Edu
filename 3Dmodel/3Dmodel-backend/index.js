@@ -52,7 +52,7 @@ const lipSyncMessage = async (message) => {
 };
 
 app.post("/chat", async (req, res) => {
-  console.log("IN CHAT")
+  console.log("IN CHAT");
   const userMessage = req.body.message;
   if (!userMessage) {
     res.send({
@@ -122,30 +122,30 @@ app.post("/chat", async (req, res) => {
     ],
   });
 
-  console.log("STEP 1")
+  console.log("STEP 1");
   let messages = JSON.parse(completion.choices[0].message.content);
   if (messages.messages) {
     messages = messages.messages; // ChatGPT is not 100% reliable, sometimes it directly returns an array and sometimes a JSON object with a messages property
   }
-  console.log("STEP 2")
+  console.log("STEP 2");
   for (let i = 0; i < messages.length; i++) {
     const message = messages[i];
     // generate audio file
-    console.log("STEP 3", i)
+    console.log("STEP 3", i);
     const fileName = `audios/message_${i}.mp3`; // The name of your audio file
     const textInput = message.text; // The text you wish to convert to speech
-    console.log("TEXT IS", textInput)
-    console.log("STEP 3.B", i)
+    console.log("TEXT IS", textInput);
+    console.log("STEP 3.B", i);
     await voice.textToSpeech(elevenLabsApiKey, voiceID, fileName, textInput);
-    console.log("STEP 4", i)
+    console.log("STEP 4", i);
     // generate lipsync
     await lipSyncMessage(i);
-    console.log("STEP 5", i)
+    console.log("STEP 5", i);
     message.audio = await audioFileToBase64(fileName);
     message.lipsync = await readJsonTranscript(`audios/message_${i}.json`);
-    console.log("STEP 6", i)
+    console.log("STEP 6", i);
   }
-  console.log("STEP 3")
+  console.log("STEP 3");
   res.send({ messages });
 });
 
@@ -161,4 +161,5 @@ const audioFileToBase64 = async (file) => {
 
 app.listen(port, () => {
   console.log(`Virtual Girlfriend listening on port ${port}`);
+  console.log(`Hosted on http://localhost:${port}`);
 });
