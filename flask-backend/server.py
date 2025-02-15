@@ -5,6 +5,7 @@ import os
 from werkzeug.utils import secure_filename
 import numpy as np
 from deep_translator import GoogleTranslator
+import jieba
 # from translate import Translator
 
 app = Flask(__name__)
@@ -134,11 +135,12 @@ def translate_text():
         translator = GoogleTranslator(source='zh-CN', target='id')
         # translator = Translator(to_lang='id', from_lang='zh')
         res = {}
-        for c in text:
+        words = jieba.lcut(text)
+        for word in words:
             try:
-                res[c] = translator.translate(c)
+                res[word] = translator.translate(word)
             except Exception as translation_error:
-                res[c] = ""
+                res[word] = ""
         return jsonify(res)
     except Exception as e:
         return jsonify({"error": str(e)}), 500
