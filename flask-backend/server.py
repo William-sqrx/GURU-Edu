@@ -4,8 +4,8 @@ from flask_cors import CORS
 import os
 from werkzeug.utils import secure_filename
 import numpy as np
-# from deep_translator import GoogleTranslator
-from translate import Translator
+from deep_translator import GoogleTranslator
+# from translate import Translator
 
 app = Flask(__name__)
 
@@ -34,7 +34,7 @@ def convert_np_to_normal(dictionary):
 
 @app.route('/')
 def home():
-    return "Hello, Flask!"
+    return jsonify({"message": "Hello, World!"})
 
 @app.route('/analyze-emotions', methods=['POST'])
 def analyze_emotions():
@@ -131,8 +131,8 @@ def translate_text():
         data = request.json
         text = data['text']
         print(f"Translating text: {text}")
-        # translator = GoogleTranslator(source='zh-CN', target='id')
-        translator = Translator(to_lang='id', from_lang='zh')
+        translator = GoogleTranslator(source='zh-CN', target='id')
+        # translator = Translator(to_lang='id', from_lang='zh')
         res = {}
         for c in text:
             try:

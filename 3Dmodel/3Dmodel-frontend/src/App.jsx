@@ -5,6 +5,7 @@ import { Experience } from "./components/Experience";
 import { UI } from "./components/UI";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import StreamVideo from "./pages/stream-video";
+import Translate from "./pages/translate";
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
           }
         />
         <Route path="/stream-video" element={<StreamVideo />} />
+        <Route path="/translate" element={<Translate />} />
       </Routes>
     </Router>
   );
