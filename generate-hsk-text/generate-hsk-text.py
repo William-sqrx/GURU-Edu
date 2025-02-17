@@ -1,8 +1,10 @@
 from openai import OpenAI
 import csv
+import os
 
-# TODO: move to different file later; !! PLEASE USE YOUR OWN API KEY FOR TESTING !!
-client = OpenAI(api_key="")
+api_key = os.getenv('OPENAI_API_KEY')
+client = OpenAI(api_key=api_key)
+hsk_vocab_file = 'generate-hsk-text/filtered-zerotohero-zh-vocabulary.csv'
 
 def get_hsk_words_from_csv(csv_file, hsk_level):
     hsk_words = []
@@ -16,7 +18,7 @@ def get_hsk_words_from_csv(csv_file, hsk_level):
         print(f"Error loading CSV: {e}")
     return hsk_words
 
-def generate_conversation_starters(hsk_level, topic, csv_file='filtered-zerotohero-zh-vocabulary.csv'):
+def generate_conversation_starters(hsk_level, topic, csv_file=hsk_vocab_file):
     # Generates sentence completions using GPT with HSK-restricted vocabulary.
     hsk_words = get_hsk_words_from_csv(csv_file, hsk_level)
     if not hsk_words:
@@ -43,7 +45,7 @@ def generate_conversation_starters(hsk_level, topic, csv_file='filtered-zerotohe
     return response.choices[0].message.content
 
 
-def complete_sentence(user_input, hsk_level, topic, csv_file='filtered-zerotohero-zh-vocabulary.csv'):
+def complete_sentence(user_input, hsk_level, topic, csv_file=hsk_vocab_file):
     # Generates sentence completions using GPT with HSK-restricted vocabulary.
     hsk_words = get_hsk_words_from_csv(csv_file, hsk_level)
     if not hsk_words:
