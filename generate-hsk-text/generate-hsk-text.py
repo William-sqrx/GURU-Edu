@@ -2,7 +2,7 @@ from openai import OpenAI
 import csv
 
 # TODO: move to different file later; !! PLEASE USE YOUR OWN API KEY FOR TESTING !!
-client = OpenAI(api_key="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")
+client = OpenAI(api_key="")
 
 def get_hsk_words_from_csv(csv_file, hsk_level):
     hsk_words = []
