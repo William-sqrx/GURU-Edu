@@ -18,6 +18,42 @@ if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER, mode=0o777)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
+def combine_emotion_data(emotion_data):
+    # Define ranking factors based on provided calculations
+    engagement = (emotion_data['neutral'] * 0.2 + emotion_data['happy'] * 0.8) / 2
+    confusion = (emotion_data['fear'] + emotion_data['surprise']) / 2
+    frustration = (emotion_data['angry'] + emotion_data['sad']) / 2
+    curiosity = (emotion_data['surprise'] * 0.8 + emotion_data['neutral'] * 0.05) / 2
+    boredom = emotion_data['neutral'] * 0.8
+    confidence = (emotion_data['neutral'] - frustration) * 0.5
+    surprise = emotion_data['surprise']
+    hesitation = (emotion_data['fear'] + emotion_data['neutral'] * 0.1) / 2
+
+    # Create a dictionary to store calculated engagement values
+    combined_emotions = {
+        "engagement": float(engagement),
+        "confusion": float(confusion),
+        "frustration": float(frustration),
+        "curiosity": float(curiosity),
+        "boredom": float(boredom),
+        "confidence": float(confidence),
+        "surprise": float(surprise),
+        "hesitation": float(hesitation),
+        "neutral": float(emotion_data['neutral']),
+        "happy": float(emotion_data['happy']),
+    }
+
+    # Determine the dominant combined emotion
+    sorted_emotions = sorted(combined_emotions.items(), key=lambda item: item[1], reverse=True)
+    dominant_combined_emotion = sorted_emotions[0][0]
+    top_3_emotions = {emotion: value for emotion, value in sorted_emotions[:3]}
+
+    # Return the structured combined emotion data
+    return {
+        "combined_emotions": combined_emotions,
+        "dominant_combined_emotion": dominant_combined_emotion,
+        "top_3_emotions": top_3_emotions
+    }
 
 def convert_np_to_normal(dictionary):
     emotion_data = dictionary['emotion']
@@ -30,8 +66,7 @@ def convert_np_to_normal(dictionary):
             emotion_data[key] = value
     if isinstance(dominant_emotion, (np.float64, np.float32)):
         dominant_emotion = float(dominant_emotion)
-    emotion_data['dominant_emotion'] = dominant_emotion
-    return emotion_data
+    return combine_emotion_data(emotion_data)
 
 @app.route('/')
 def home():
