@@ -1,5 +1,5 @@
 from openai import OpenAI
-from whisperx_test import transcribe_audio
+from whisperx_audio import transcribe_audio
 import json
 import re
 
