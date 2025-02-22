@@ -15,6 +15,7 @@ function App() {
       console.log("Speech start detected");
       setTalking(true);
     },
+    redemptionFrames: 20,
   });
 
   useEffect(() => {
