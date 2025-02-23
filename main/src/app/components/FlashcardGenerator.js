@@ -1,9 +1,33 @@
 "use client";
 import React, { useState } from "react";
 import { Upload } from "lucide-react";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import Flashcard from "./Flashcard";
 import styles from "./FlashcardGenerator.module.css";
+
+// Upload new audio to database
+const uploadAudio = async (audioData) => {
+  const response = await fetch("/api/audio", {
+    method: "POST",
+    body: JSON.stringify(audioData),
+    headers: { "Content-Type": "application/json" },
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to upload audio");
+  }
+
+  return response.json();
+};
+
+// Fetch all uploaded audios
+const fetchAudios = async () => {
+  const response = await fetch("/api/audio");
+  if (!response.ok) {
+    throw new Error("Failed to fetch audios");
+  }
+  return response.json();
+};
 
 const generateFlashcards = async (audioFile) => {
   const formData = new FormData();
@@ -23,13 +47,28 @@ const generateFlashcards = async (audioFile) => {
 
 const FlashcardGenerator = () => {
   const [audioFile, setAudioFile] = useState(null);
-
+  const [selectedAudio, setSelectedAudio] = useState(null);
   const mutation = useMutation({
     mutationFn: generateFlashcards,
     onError: (error) => {
       console.error("Error generating flashcards:", error);
     },
   });
+
+  const uploadMutation = useMutation({
+    mutationFn: uploadAudio,
+    onError: (error) => {
+      console.error("Error uploading audio:", error);
+    },
+  });
+  const { data: audioData, refetch } = useQuery({
+    queryKey: ["audios"],
+    queryFn: fetchAudios,
+  });
+  console.log(
+    "audiodata",
+    audioData?.audios?.map((audio) => audio.flashcards)
+  );
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -38,14 +77,29 @@ const FlashcardGenerator = () => {
     }
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!audioFile) return;
-    mutation.mutate(audioFile);
+    const flashcardData = await mutation.mutateAsync(audioFile);
+
+    console.log("Generated flashcards:", flashcardData);
+    // Upload audio metadata to DB
+    const audioMetadata = {
+      title: audioFile.name,
+      description: "Generated audio file",
+      audio_url: URL.createObjectURL(audioFile), // Store URL for now
+      flashcards: flashcardData,
+    };
+
+    console.log("Uploading audio metadata:", audioMetadata);
+
+    await uploadMutation.mutateAsync(audioMetadata);
+    refetch(); // Refresh audio list
   };
 
   return (
     <div className={styles.container}>
       <div className={styles.wrapper}>
+        {/* Audio Upload Section */}
         <div className={styles.uploadCard}>
           <div className={styles.uploadContent}>
             <div className={styles.uploadControls}>
@@ -68,23 +122,45 @@ const FlashcardGenerator = () => {
                 disabled={!audioFile || mutation.isPending}
                 className={styles.generateButton}
               >
-                {mutation.isPending ? "Generating..." : "Generate Flashcards"}
+                {mutation.isPending
+                  ? "Generating..."
+                  : "Generate & Upload Audio"}
               </button>
             </div>
           </div>
         </div>
 
-        <div className={styles.flashcardsGrid}>
-          {mutation.data?.map((card, index) => (
-            <Flashcard
-              key={index}
-              chineseCharacter={card.chinese.split(",")[0]}
-              pinyin={card.chinese.split(",")[1]}
-              englishTranslation={card.english}
-              indonesianTranslation={JSON.stringify(card.explanation)}
-            />
+        {/* Audio List Section */}
+        <div className={styles.audioList}>
+          <h2>Select an Audio</h2>
+          {audioData?.audios.map((audio) => (
+            <button
+              key={audio._id}
+              onClick={() => setSelectedAudio(audio)}
+              className={styles.audioButton}
+            >
+              {audio.title}
+            </button>
           ))}
         </div>
+
+        {/* Flashcards Display Section */}
+        {selectedAudio && (
+          <>
+            <h2>Flashcards for {selectedAudio.title}</h2>
+            <div className={styles.flashcardsGrid}>
+              {selectedAudio.flashcards.map((card, index) => (
+                <Flashcard
+                  key={index}
+                  chineseCharacter={card.chineseCharacter}
+                  pinyin={card.pinyin}
+                  englishTranslation={card.englishTranslation}
+                  explanation={JSON.stringify(card.explanation)}
+                />
+              ))}
+            </div>
+          </>
+        )}
 
         {mutation.isPending && (
           <div className={styles.loadingContainer}>

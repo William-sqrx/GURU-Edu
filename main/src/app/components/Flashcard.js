@@ -7,7 +7,7 @@ const Flashcard = ({
   chineseCharacter,
   pinyin,
   englishTranslation,
-  indonesianTranslation,
+  explanation,
   number,
 }) => {
   const [isClicked, setIsClicked] = useState(false);
@@ -41,7 +41,7 @@ const Flashcard = ({
         <div className="popup">
           <div className="pinyin">{pinyin}</div>
           <div className="translation">{englishTranslation}</div>
-          <div className="translation">{indonesianTranslation}</div>
+          <div className="translation">{explanation}</div>
           {number !== undefined && <div className="number">{number}</div>}
         </div>
       )}

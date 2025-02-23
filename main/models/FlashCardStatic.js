@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 const FlashcardSchema = new mongoose.Schema({
   chineseCharacter: { type: String, required: true },
   englishTranslation: { type: String, required: true },
-  indonesianTranslation: { type: String, required: true },
+  explanation: { type: String, required: true },
   pinyin: { type: String, required: true },
 });
 

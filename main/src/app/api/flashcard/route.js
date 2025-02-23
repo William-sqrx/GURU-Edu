@@ -19,17 +19,12 @@ export async function POST(req) {
   try {
     await connectToDatabase();
     const body = await req.json(); // Fix: Parse JSON correctly
-    const {
-      chineseCharacter,
-      englishTranslation,
-      indonesianTranslation,
-      pinyin,
-    } = body;
+    const { chineseCharacter, englishTranslation, explanation, pinyin } = body;
 
     const newFlashcard = new FlashCardStatic({
       chineseCharacter,
       englishTranslation,
-      indonesianTranslation,
+      explanation,
       pinyin,
     });
 
