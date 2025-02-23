@@ -1,1 +1,6 @@
 *.keras
+
+flask-backend
+
+# DS STOre
+.DS_Store

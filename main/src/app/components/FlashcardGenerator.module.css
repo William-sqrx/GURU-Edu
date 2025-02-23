@@ -1,0 +1,159 @@
+.container {
+  min-height: 100vh;
+  padding: 2rem;
+  background-color: #f3f4f6;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.wrapper {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.uploadCard {
+  width: 100%;
+  max-width: 800px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
+}
+
+.uploadContent {
+  padding: 1.5rem;
+}
+
+.uploadControls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.fileInput {
+  display: none;
+}
+
+.uploadButton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background-color: #3b82f6;
+  color: white;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.uploadButton:hover {
+  background-color: #2563eb;
+}
+
+.fileName {
+  color: #4b5563;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.generateButton {
+  padding: 0.5rem 1rem;
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.generateButton:hover:not(:disabled) {
+  background-color: #2563eb;
+}
+
+.generateButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.flashcardsGrid {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(7, 0.1fr);
+  /* gap: 2rem; */
+  place-items: center;
+  /* margin: 0 auto; */
+}
+
+.loadingContainer {
+  width: 100%;
+  text-align: center;
+  padding: 2rem 0;
+}
+
+.spinner {
+  width: 3rem;
+  height: 3rem;
+  border: 3px solid #e5e7eb;
+  border-bottom-color: #3b82f6;
+  border-radius: 50%;
+  display: inline-block;
+  animation: spin 1s linear infinite;
+}
+
+.loadingText {
+  margin-top: 1rem;
+  color: #4b5563;
+}
+
+.errorMessage {
+  width: 100%;
+  text-align: center;
+  padding: 2rem 0;
+  color: #ef4444;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .container {
+    padding: 1rem;
+  }
+
+  .uploadControls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .uploadButton {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .generateButton {
+    width: 100%;
+  }
+
+  .flashcardsGrid {
+    /* grid-template-columns: 1fr; */
+    /* gap: 1rem; */
+  }
+}
+
+@media (min-width: 641px) and (max-width: 1024px) {
+  .flashcardsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

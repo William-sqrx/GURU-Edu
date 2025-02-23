@@ -1,155 +1,21 @@
-import Image from "next/image";
-import styles from "./page.module.css";
-import Flashcard from "./components/Flashcard";
-import "./page.css";
+// app/page.tsx
+"use client";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import dynamic from "next/dynamic";
+
+const FlashcardGenerator = dynamic(
+  () => import("./components/FlashcardGenerator"),
+  { ssr: false }
+);
+
+const queryClient = new QueryClient();
 
 export default function Home() {
   return (
-    <div className="background">
-      <Flashcard
-        chineseCharacter="你"
-        pinyin="nǐ"
-        englishTranslation="you"
-        indonesianTranslation="kamu"
-      />
-      <Flashcard
-        chineseCharacter="你"
-        pinyin="nǐ"
-        englishTranslation="you"
-        indonesianTranslation="kamu"
-      />
-      <Flashcard
-        chineseCharacter="你"
-        pinyin="nǐ"
-        englishTranslation="you"
-        indonesianTranslation="kamu"
-      />
-      <Flashcard
-        chineseCharacter="你"
-        pinyin="nǐ"
-        englishTranslation="you"
-        indonesianTranslation="kamu"
-      />
-      <Flashcard
-        chineseCharacter="你"
-        pinyin="nǐ"
-        englishTranslation="you"
-        indonesianTranslation="kamu"
-      />
-      <Flashcard
-        chineseCharacter="你"
-        pinyin="nǐ"
-        englishTranslation="you"
-        indonesianTranslation="kamu"
-      />
-      <Flashcard
-        chineseCharacter="你"
-        pinyin="nǐ"
-        englishTranslation="you"
-        indonesianTranslation="kamu"
-      />
-      <Flashcard
-        chineseCharacter="你"
-        pinyin="nǐ"
-        englishTranslation="you"
-        indonesianTranslation="kamu"
-      />
-      <Flashcard
-        chineseCharacter="你"
-        pinyin="nǐ"
-        englishTranslation="you"
-        indonesianTranslation="kamu"
-      />
-      <Flashcard
-        chineseCharacter="你"
-        pinyin="nǐ"
-        englishTranslation="you"
-        indonesianTranslation="kamu"
-      />
-      <Flashcard
-        chineseCharacter="你"
-        pinyin="nǐ"
-        englishTranslation="you"
-        indonesianTranslation="kamu"
-      />
-      <Flashcard
-        chineseCharacter="你"
-        pinyin="nǐ"
-        englishTranslation="you"
-        indonesianTranslation="kamu"
-      />
-      <Flashcard
-        chineseCharacter="你"
-        pinyin="nǐ"
-        englishTranslation="you"
-        indonesianTranslation="kamu"
-      />
-      <Flashcard
-        chineseCharacter="你"
-        pinyin="nǐ"
-        englishTranslation="you"
-        indonesianTranslation="kamu"
-      />
-      <Flashcard
-        chineseCharacter="你"
-        pinyin="nǐ"
-        englishTranslation="you"
-        indonesianTranslation="kamu"
-      />
-      <Flashcard
-        chineseCharacter="你"
-        pinyin="nǐ"
-        englishTranslation="you"
-        indonesianTranslation="kamu"
-      />
-      <Flashcard
-        chineseCharacter="你"
-        pinyin="nǐ"
-        englishTranslation="you"
-        indonesianTranslation="kamu"
-      />
-      <Flashcard
-        chineseCharacter="你"
-        pinyin="nǐ"
-        englishTranslation="you"
-        indonesianTranslation="kamu"
-      />
-      <Flashcard
-        chineseCharacter="你"
-        pinyin="nǐ"
-        englishTranslation="you"
-        indonesianTranslation="kamu"
-      />
-      <Flashcard
-        chineseCharacter="你"
-        pinyin="nǐ"
-        englishTranslation="you"
-        indonesianTranslation="kamu"
-      />
-      <Flashcard
-        chineseCharacter="你"
-        pinyin="nǐ"
-        englishTranslation="you"
-        indonesianTranslation="kamu"
-      />
-      <Flashcard
-        chineseCharacter="你"
-        pinyin="nǐ"
-        englishTranslation="you"
-        indonesianTranslation="kamu"
-      />
-      <Flashcard
-        chineseCharacter="你"
-        pinyin="nǐ"
-        englishTranslation="you"
-        indonesianTranslation="kamu"
-      />
-      <Flashcard
-        chineseCharacter="你"
-        pinyin="nǐ"
-        englishTranslation="you"
-        indonesianTranslation="kamu"
-      />
-    </div>
+    <QueryClientProvider client={queryClient}>
+      <div className="background">
+        <FlashcardGenerator />
+      </div>
+    </QueryClientProvider>
   );
 }
