@@ -1,5 +1,6 @@
 import connectToDatabase from "../../../../lib/mongodb";
 import User from "../../../../models/User";
+
 export async function GET(req) {
   try {
     await connectToDatabase();
@@ -34,6 +35,44 @@ export async function POST(req) {
 
     return new Response(JSON.stringify({ success: true, user: newUser }), {
       status: 201,
+    });
+  } catch (error) {
+    return new Response(
+      JSON.stringify({ success: false, error: error.message }),
+      { status: 500 }
+    );
+  }
+}
+
+export async function PUT(req) {
+  try {
+    await connectToDatabase();
+    const body = await req.json();
+
+    const { email, photo_url } = body;
+    if (!email || !photo_url) {
+      return new Response(
+        JSON.stringify({ success: false, error: "Missing fields" }),
+        { status: 400 }
+      );
+    }
+
+    // Update the user's photo_url by email
+    const updatedUser = await User.findOneAndUpdate(
+      { email },
+      { photo_url },
+      { new: true }
+    );
+
+    if (!updatedUser) {
+      return new Response(
+        JSON.stringify({ success: false, error: "User not found" }),
+        { status: 404 }
+      );
+    }
+
+    return new Response(JSON.stringify({ success: true, user: updatedUser }), {
+      status: 200,
     });
   } catch (error) {
     return new Response(
