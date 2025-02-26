@@ -23,10 +23,15 @@ const Login = ({ onNavigate }) => {
       .then((res) => res.json())
       .then((data) => {
         if (data.message === "Login successful") {
-          console.log("✅ Logged in successfully:", data);
-          localStorage.setItem("user", JSON.stringify(data));
+          console.log("✅ Logged in successfully:");
           setSuccess("Login successful!");
-          setError(""); // Clear error
+          setError("");
+          localStorage.setItem(
+            "user",
+            JSON.stringify({
+              email,
+            })
+          );
           onNavigate("home");
         } else {
           setError(data.message); // Show error message from backend
