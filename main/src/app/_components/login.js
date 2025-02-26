@@ -26,7 +26,7 @@ const Login = ({ onNavigate }) => {
           console.log("✅ Logged in successfully:", data);
           setSuccess("Login successful!");
           setError(""); // Clear error
-          // onNavigate("dashboard"); // Redirect to a dashboard or another page
+          onNavigate("home");
         } else {
           setError(data.message); // Show error message from backend
           setSuccess("");

@@ -5,6 +5,7 @@ import Spline from "@splinetool/react-spline";
 import Login from "./_components/login";
 import Welcome from "./_components/welcome";
 import Signup from "./_components/signup";
+import HomePage from "./_components/homepage";
 import "./page.css";
 
 export default function Home() {
@@ -21,6 +22,7 @@ export default function Home() {
           {currentPage === "welcome" && <Welcome onNavigate={setCurrentPage} />}
           {currentPage === "login" && <Login onNavigate={setCurrentPage} />}
           {currentPage === "signup" && <Signup onNavigate={setCurrentPage} />}
+          {currentPage === "home" && <HomePage onNavigate={setCurrentPage} />}
         </div>
       </div>
     </div>
