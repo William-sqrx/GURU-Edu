@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 // import dynamic from "next/dynamic";
 import Spline from "@splinetool/react-spline";
 import Login from "./_components/login";
@@ -10,6 +10,13 @@ import "./page.css";
 
 export default function Home() {
   const [currentPage, setCurrentPage] = useState("welcome");
+
+  useEffect(() => {
+    const user = localStorage.getItem("user");
+    if (user) {
+      setCurrentPage("home");
+    }
+  }, []);
 
   return (
     <div className="App">
